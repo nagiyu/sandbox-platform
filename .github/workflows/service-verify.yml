@@ -48,6 +48,8 @@ jobs:
           {
             echo '## platform の版'
             echo
+            echo "- Node: $(node -v)"
+            echo
             echo '```'
             npm ls --depth=0 2>/dev/null | grep '@nagiyu/' || echo '(@nagiyu のパッケージを使っていない)'
             echo '```'
