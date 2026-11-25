@@ -18,3 +18,9 @@
 - **パッケージ**: `packages/*/package.json` の `version` を上げて `master` に push すると、`publish.yml` がその版を publish する
 - **ワークフロー / action**: 互換を保つ変更は `v1` タグを付け直す。壊す変更は `v2` を切り、サービス側がタグを上げて取り込む
 - **plugin**: `plugins/platform-rules/` を直して push すると、各サービスのセッションが次に plugin を更新したときに届く
+
+## 変更履歴
+
+### @nagiyu/sandbox-common
+
+- **0.2.0 (破壊的変更)**: `greet` の既定の敬称を「さん」から「様」に変えた。従来の出力を保つには `greet(name, { honorific: 'さん' })` とする

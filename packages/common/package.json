@@ -1,6 +1,6 @@
 {
   "name": "@nagiyu/sandbox-common",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "サービス共通のロジック (sandbox)",
   "type": "module",
   "main": "dist/index.js",
