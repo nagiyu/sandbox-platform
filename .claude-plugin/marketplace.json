@@ -1,0 +1,13 @@
+{
+  "name": "nagiyu-sandbox",
+  "owner": {
+    "name": "nagiyu"
+  },
+  "plugins": [
+    {
+      "name": "platform-rules",
+      "source": "./plugins/platform-rules",
+      "description": "サービス共通の運用ルールと、platform の更新を取り込む手順"
+    }
+  ]
+}

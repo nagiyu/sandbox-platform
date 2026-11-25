@@ -1,0 +1,12 @@
+{
+  "//": "outDir / rootDir は extends 元のファイルの位置で解決されるため、ここでは決めず各リポジトリで指定する",
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "strict": true,
+    "declaration": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true
+  }
+}

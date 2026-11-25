@@ -1,0 +1,30 @@
+name: Service Verify (reusable)
+
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        description: Node のバージョン
+        type: string
+        default: '22'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+    steps:
+      - uses: actions/checkout@v4
+
+      # reusable workflow の中の ./ は呼び出し側のリポジトリを指すので、platform の action はリポジトリ名で参照する
+      - uses: nagiyu/sandbox-platform/.github/actions/setup-node@v1
+        with:
+          node-version: ${{ inputs.node-version }}
+          token: ${{ github.token }}
+
+      - name: Build
+        run: npm run build --if-present
+
+      - name: Test
+        run: npm test --if-present

@@ -1,0 +1,5 @@
+{
+  "name": "platform-rules",
+  "version": "0.1.0",
+  "description": "サービス共通の運用ルールと、platform の更新を取り込む手順"
+}

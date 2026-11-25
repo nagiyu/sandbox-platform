@@ -1,0 +1,31 @@
+name: Setup Node and install
+description: Node を用意し、GitHub Packages の @nagiyu スコープを読めるようにして依存を入れる
+
+inputs:
+  node-version:
+    description: Node のバージョン
+    default: '22'
+  token:
+    description: GitHub Packages を読むトークン (composite action は secrets を直接読めないため、呼び出し側から渡す)
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+        registry-url: https://npm.pkg.github.com
+        scope: '@nagiyu'
+
+    # テンプレートから作った直後のリポジトリには lockfile が無いので、そのときだけ install にする
+    - name: Install dependencies
+      shell: bash
+      env:
+        NODE_AUTH_TOKEN: ${{ inputs.token }}
+      run: |
+        if [ -f package-lock.json ]; then
+          npm ci
+        else
+          npm install
+        fi

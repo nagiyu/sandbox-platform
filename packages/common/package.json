@@ -1,0 +1,25 @@
+{
+  "name": "@nagiyu/sandbox-common",
+  "version": "0.1.0",
+  "description": "サービス共通のロジック (sandbox)",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc",
+    "test": "npm run build && node --test tests/*.test.mjs",
+    "prepack": "npm run build"
+  },
+  "devDependencies": {
+    "@nagiyu/sandbox-tsconfig": "*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nagiyu/sandbox-platform.git",
+    "directory": "packages/common"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  }
+}
