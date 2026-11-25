@@ -32,15 +32,9 @@ jobs:
             echo "$VERSION は出し済み。出した版は動かさない"; exit 1
           fi
 
-      # workflow から platform 自身の action を呼ぶ参照は、出す版を指していないと別の版の action が動く。
-      # 版は master のコードに書けないので、参照を書き換えたコミットを作り、そこにタグを付ける (master には戻さない)
-      - name: Pin self references and tag
+      # 出す版は master の今のコミットに付ける。出した版のタグは動かさない
+      - name: Tag
         run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          grep -rl 'nagiyu/sandbox-platform/.github/actions/[^@]*@master' .github/workflows \
-            | xargs -r sed -i -E "s#(nagiyu/sandbox-platform/.github/actions/[^@]+)@master#\1@${VERSION}#g"
-          git commit -am "${VERSION} をリリースする" || true
           git tag "$VERSION"
           git push origin "refs/tags/$VERSION"
           echo "${VERSION} を $(git rev-parse --short HEAD) に付けた" >> "$GITHUB_STEP_SUMMARY"

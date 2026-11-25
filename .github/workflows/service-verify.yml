@@ -17,12 +17,24 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # reusable workflow の中の ./ は呼び出し側のリポジトリを指すので、platform の action はリポジトリ名で参照する。
-      # master では @master にしておき、リリースのときに release-workflows.yml がその版へ書き換える
-      - uses: nagiyu/sandbox-platform/.github/actions/setup-node@master
+      # platform の action を呼ぶと、その参照の版をこの workflow の版と揃える必要があり、master のコードに版を書けない。
+      # なので action を呼ばず、同じ手順をここに持つ
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{ inputs.node-version }}
-          token: ${{ github.token }}
+          registry-url: https://npm.pkg.github.com
+          scope: '@nagiyu'
+
+      # テンプレートから作った直後のリポジトリには lockfile が無いので、そのときだけ install にする
+      - name: Install dependencies
+        env:
+          NODE_AUTH_TOKEN: ${{ github.token }}
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
 
       - name: Build
         run: npm run build --if-present
