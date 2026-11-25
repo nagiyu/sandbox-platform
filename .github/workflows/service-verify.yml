@@ -28,3 +28,14 @@ jobs:
 
       - name: Test
         run: npm test --if-present
+
+      # どの版の platform 資産で検証したかを、run の画面で見られるようにする
+      - name: Report platform versions
+        run: |
+          {
+            echo '## platform の版'
+            echo
+            echo '```'
+            npm ls --depth=0 2>/dev/null | grep '@nagiyu/' || echo '(@nagiyu のパッケージを使っていない)'
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
