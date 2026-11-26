@@ -9,20 +9,28 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      packages: write
+      # npmjs.com の trusted publishing (OIDC) で token なしに publish するため
+      id-token: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          registry-url: https://npm.pkg.github.com
-          scope: '@nagiyu'
+          node-version: '24'
+          registry-url: https://registry.npmjs.org
+
+      # trusted publishing は npm CLI 11.5.1 以上が要る
+      - name: Ensure npm for trusted publishing
+        run: |
+          npm install -g npm@11
+          npm --version
+
       - run: npm ci
 
       # version を上げたパッケージだけを publish する。同じ版の再 publish はレジストリが拒むので、先に有無を確かめる
+      # NPM_TOKEN は、まだ npmjs.com に無いパッケージを初めて出すときだけ使う。trusted publishing を登録した後は secret を消し、OIDC で出す
       - name: Publish changed versions
         env:
-          NODE_AUTH_TOKEN: ${{ github.token }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           for dir in packages/*/; do
             name=$(node -p "require('./${dir}package.json').name")
@@ -31,6 +39,6 @@ jobs:
               echo "skip: ${name}@${version} は publish 済み"
             else
               echo "publish: ${name}@${version}"
-              npm publish --workspace "${dir%/}"
+              npm publish --workspace "${dir%/}" --access public
             fi
           done

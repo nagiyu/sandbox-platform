@@ -2,13 +2,16 @@
   "name": "@nagiyu/sandbox-tsconfig",
   "version": "0.1.0",
   "description": "サービス共通の tsconfig",
-  "files": ["base.json"],
+  "files": [
+    "base.json"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/nagiyu/sandbox-platform.git",
     "directory": "packages/tsconfig"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
   }
 }
