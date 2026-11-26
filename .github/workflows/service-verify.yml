@@ -13,7 +13,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      packages: read
     steps:
       - uses: actions/checkout@v4
 
@@ -22,13 +21,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ inputs.node-version }}
-          registry-url: https://npm.pkg.github.com
-          scope: '@nagiyu'
 
       # テンプレートから作った直後のリポジトリには lockfile が無いので、そのときだけ install にする
+      # @nagiyu のパッケージは npmjs.com に public で置くので、読むのに token は要らない
       - name: Install dependencies
-        env:
-          NODE_AUTH_TOKEN: ${{ github.token }}
         run: |
           if [ -f package-lock.json ]; then
             npm ci
