@@ -1,44 +1,16 @@
 name: Publish Packages
 
-# リリースの単位で人が起動する。version を上げていないパッケージは飛ばす
+# リリースの単位で人が起動する。version を上げていないパッケージは飛ばす。
+# 中身は別のリポジトリの reusable workflow が持つ。trusted publishing はこのファイル名 (publish.yml) で照合される
 on:
   workflow_dispatch:
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   publish:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      # npmjs.com の trusted publishing (OIDC) で token なしに publish するため
-      id-token: write
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '24'
-          registry-url: https://registry.npmjs.org
-
-      # trusted publishing は npm CLI 11.5.1 以上が要る
-      - name: Ensure npm for trusted publishing
-        run: |
-          npm install -g npm@11
-          npm --version
-
-      - run: npm ci
-
-      # version を上げたパッケージだけを publish する。同じ版の再 publish はレジストリが拒むので、先に有無を確かめる
-      # NPM_TOKEN は、まだ npmjs.com に無いパッケージを初めて出すときだけ使う。trusted publishing を登録した後は secret を消し、OIDC で出す
-      - name: Publish changed versions
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          for dir in packages/*/; do
-            name=$(node -p "require('./${dir}package.json').name")
-            version=$(node -p "require('./${dir}package.json').version")
-            if npm view "${name}@${version}" version >/dev/null 2>&1; then
-              echo "skip: ${name}@${version} は publish 済み"
-            else
-              echo "publish: ${name}@${version}"
-              npm publish --workspace "${dir%/}" --access public
-            fi
-          done
+    uses: nagiyu/sandbox-service-template/.github/workflows/npm-publish.yml@master
+    with:
+      package-dirs: packages/*/
